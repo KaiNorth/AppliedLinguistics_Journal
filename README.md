@@ -1,0 +1,1 @@
+# AppliedLinguistics_Journal
