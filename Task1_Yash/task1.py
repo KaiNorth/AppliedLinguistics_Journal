@@ -7,7 +7,7 @@ Created on Mon Apr 26 20:12:06 2021
 
 import os
 import pandas as pd 
-import csv
+
   
     
 """
@@ -84,7 +84,7 @@ def complexity_ratings_SemEval2016():
         dataset_SemEval2016_path = base_dir + '/Applied Linguistics Journal/Datasets/SemEval-2016/cwi_testing_annotated.txt'
         #get the file contents in a dataFrame
         df_SemEval2016 = pd.read_csv(dataset_SemEval2016_path,sep='\t',header=None)
-    df_SemEval2016.columns = ['sentences','token','placement','Complexity']     
+    df_SemEval2016.columns = ['sentences','token','placement','complexity']     
     return df_SemEval2016        
 
         
@@ -143,7 +143,7 @@ def complexity_values():
     df_final2['WCL_complexity'] = df_WCL['complexity']
     df_final3 = pd.DataFrame()
     df_final3['token'] = df_SemEval2016['token']
-    df_final3['SemEval2016_complexity'] = df_WCL['complexity']
+    df_final3['SemEval2016_complexity'] = df_SemEval2016['complexity']
     df_final4 = pd.DataFrame()
     df_final4['token'] = df_BEA2018_1['token']
     df_final4['BEA2018_News_binaryComplexity'] = df_BEA2018_1['binaryComplexity']
@@ -161,6 +161,28 @@ def complexity_values():
     df_last.drop(labels='index',axis=1,inplace=True)
     return df_last
 
-
-
-
+"""
+Get the complexity values for the common dataset
+"""
+def complexity_values_combined():
+    #get df_last
+    df_last = complexity_values()
+    #lowercase all tokens
+    lowercase_tokens = []
+    tokens = df_last['token']
+    tokens = tokens.astype(str)
+    for i in range(len(tokens)):
+        lowercase_tokens.append(tokens[i].lower())
+    df_last['lowercase_tokens'] = lowercase_tokens
+    #groupby all tokens
+    df_last_grouped = df_last.groupby('lowercase_tokens')
+    #get the keys for the groups
+    keys_list = list(df_last_grouped.groups.keys())
+    #get the common tokens with complexity values
+    df_list = [] 
+    for i in range(len(keys_list)):
+        df_list.append(df_last.iloc[df_last_grouped.groups[keys_list[i]].values].mean())
+    df_last_combined = pd.DataFrame(df_list)
+    df_last_combined['tokens'] = keys_list
+    df_last_combined.to_csv('Task1_Combined.csv')
+    return df_last_combined
