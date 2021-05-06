@@ -25,7 +25,6 @@ def complexity_values_combined_task2():
     for i in range(len(keys_list)):
         word_length.append(len(keys_list[i]))
     #create a variable for the tokens as the keys_list 
-    index_values = []
     tokens = keys_list
     #create a new DataFrame
     df1 = pd.DataFrame()
@@ -33,7 +32,6 @@ def complexity_values_combined_task2():
     df1['word_length'] = word_length
     unique_word_lengths = df1['word_length'].unique()
     df2_groups = df2.groupby(by='lowercase_tokens')
-    count_list = []
     current_words = []
     df_list_final = [] 
     current_list=[]    
