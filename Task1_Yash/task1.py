@@ -9,7 +9,7 @@ import os
 import pandas as pd 
 
   
-    
+  
 """
 Get the complexity values for the CompLex database
 """    
@@ -112,9 +112,9 @@ def complexity_ratings_BEA2018():
         #Enter the path to the cloned git repository
         base_dir = input('Enter the path to the git repository (Main folder named: AppliedLinguistics_Journal) with forward slashes: ')
         #Find the file path to each of the tsv - News
-        dataset_BEA2018_path1 = base_dir + '/Applied Linguistics Journal/Datasets/BEA-2018/News_Train.tsv'
-        dataset_BEA2018_path2 =  dir_path + '/Applied Linguistics Journal/Datasets/BEA-2018/WikiNews_Train.tsv'
-        dataset_BEA2018_path3 =  dir_path + '/Applied Linguistics Journal/Datasets/BEA-2018/Wikipedia_Train.tsv'
+        dataset_BEA2018_path1 = base_dir + '/Applied Linguistics Journal/Datasets/BEA-2018/traindevset/english/News_Train.tsv'
+        dataset_BEA2018_path2 = base_dir + '/Applied Linguistics Journal/Datasets/BEA-2018/traindevset/english/WikiNews_Train.tsv'
+        dataset_BEA2018_path3 = base_dir + '/Applied Linguistics Journal/Datasets/BEA-2018/traindevset/english/Wikipedia_Train.tsv'
         #get the file contents in a dataFrame
         df_BEA2018_1 = pd.read_csv(dataset_BEA2018_path1,sep='\t',header=None)
         df_BEA2018_2 = pd.read_csv(dataset_BEA2018_path2,sep='\t',header=None)
@@ -167,12 +167,17 @@ Get the complexity values for the common dataset
 def complexity_values_combined():
     #get df_last
     df_last = complexity_values()
-    #lowercase all tokens
+    #lowercase all tokens and store in this list
     lowercase_tokens = []
     tokens = df_last['token']
+    #convert the tokens type to string 
     tokens = tokens.astype(str)
+    #for all tokens
     for i in range(len(tokens)):
-        lowercase_tokens.append(tokens[i].lower())
+        #temp_val stores the temporary variable where each token is lowercased
+        temp_val = tokens[i].lower()
+        #lowercase_tokens 
+        lowercase_tokens.append(temp_val)
     df_last['lowercase_tokens'] = lowercase_tokens
     #groupby all tokens
     df_last_grouped = df_last.groupby('lowercase_tokens')
@@ -184,5 +189,6 @@ def complexity_values_combined():
         df_list.append(df_last.iloc[df_last_grouped.groups[keys_list[i]].values].mean())
     df_last_combined = pd.DataFrame(df_list)
     df_last_combined['tokens'] = keys_list
+    df_last_combined.drop(labels=['token','lowercase_tokens'],axis=1,inplace=True)
     df_last_combined.to_csv('Task1_Combined.csv')
-    return df_last_combined
+    return df_last_combined,df_last_grouped,df_last
