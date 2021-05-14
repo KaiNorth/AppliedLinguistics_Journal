@@ -40,7 +40,7 @@ def complexity_values_combined_task3():
     #keys list for the groups 
     keys_list = list(df_groups.groups.keys())
     #Store word length values in this list
-    syllable_count= []
+    syllable_count = []
     #get the length value for each token
     for i in range(len(keys_list)):
         syllable_count.append(getSyllableCount(keys_list[i]))
